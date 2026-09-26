@@ -88,9 +88,15 @@ You need a free Supabase account. It takes a few minutes.
 2. Once it finishes setting up, open **SQL Editor** in the sidebar, click
    **New query**, paste the whole contents of [`supabase/schema.sql`](supabase/schema.sql)
    and click **Run**. This creates your two tables.
-3. Go to **Project Settings → API** and copy two values:
+3. Go to **Project Settings → API Keys** and copy two values:
    - **Project URL** (looks like `https://abcdefgh.supabase.co`)
-   - **anon** `public` key (a long string starting with `eyJ...`)
+   - **Publishable key** (starts with `sb_publishable_`)
+
+   Older projects call that second one the **anon** key and it starts with
+   `eyJ...` instead. It is the same low-privilege key under an older name —
+   Supabase renamed it, and any project created after November 2025 only has the
+   new-style one. Either value works in `.env.local`.
+
 4. In this project, copy `.env.example` to `.env.local`:
 
    ```bash
@@ -102,15 +108,23 @@ You need a free Supabase account. It takes a few minutes.
 
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://abcdefgh.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOi...
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_...
    ```
 
 6. Restart `npm run dev` so the new file is picked up.
 
-The `anon` key is designed to be used in the browser — it only grants what your
-Row Level Security policies allow, which is why `schema.sql` sets up simple
-`using (true)` policies. The `service_role` key is **not** for you: it bypasses
-all security rules. Never put it in this project or commit it.
+The publishable key is designed to be used in the browser — it only grants what
+your Row Level Security policies allow, which is why `schema.sql` sets up simple
+`using (true)` policies.
+
+Being safe to publish does **not** mean the project is safe. Right now those
+policies allow anyone to read every student and insert any attendance row, so
+anyone who opens the site can read your data and mark attendance. That is
+deliberate, to keep the demo simple, but treat this key as public until you
+add [login and roles](#left-for-you-to-implement).
+
+The **secret** key (previously `service_role`) is **not** for you: it bypasses
+all security rules. Never put it in this project and never commit it.
 
 You can sanity-check the connection from the browser console once the app is
 running:
