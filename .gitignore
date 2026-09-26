@@ -31,7 +31,10 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
+# .env* also catches .env.example, so allow that one back: it holds
+# placeholders only and is the file other people copy to .env.local.
 .env*
+!.env.example
 
 # vercel
 .vercel
